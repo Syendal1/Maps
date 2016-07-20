@@ -9,14 +9,29 @@
 import UIKit
 import MapKit
 
-class LocationVC: UIViewController,UITableViewDelegate,UITableViewDataSource {
+class LocationVC: UIViewController,UITableViewDelegate,UITableViewDataSource, MKMapViewDelegate {
 
     @IBOutlet weak var map: MKMapView!
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        map.delegate=self
+    }
+    
+    let locationManager=CLLocationManager()
+    
+    override func viewDidAppear(animated: Bool) {
+        locationAuthStatus()
+    }
+    
+    func locationAuthStatus(){
+        if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse{
+            map.showsUserLocation=true
+        }else{
+            locationManager.requestWhenInUseAuthorization()
+        }
+        
     }
 
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
