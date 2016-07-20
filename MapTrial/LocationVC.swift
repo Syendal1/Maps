@@ -20,6 +20,7 @@ class LocationVC: UIViewController,UITableViewDelegate,UITableViewDataSource, MK
     }
     
     let locationManager=CLLocationManager()
+    let regionRadius:CLLocationDistance=1000
     
     override func viewDidAppear(animated: Bool) {
         locationAuthStatus()
@@ -32,6 +33,18 @@ class LocationVC: UIViewController,UITableViewDelegate,UITableViewDataSource, MK
             locationManager.requestWhenInUseAuthorization()
         }
         
+    }
+    
+    
+    func mapView(mapView: MKMapView, didUpdateUserLocation userLocation: MKUserLocation) {
+        if let loc=userLocation.location{
+            centerMapLocation(loc)
+        }
+    }
+    
+    func centerMapLocation(location:CLLocation){
+        let coordinateRegion=MKCoordinateRegionMakeWithDistance(location.coordinate, regionRadius*2, regionRadius*2)
+        map.setRegion(coordinateRegion, animated: true)
     }
 
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
