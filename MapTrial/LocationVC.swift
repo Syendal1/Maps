@@ -14,9 +14,20 @@ class LocationVC: UIViewController,UITableViewDelegate,UITableViewDataSource, MK
     @IBOutlet weak var map: MKMapView!
     @IBOutlet weak var tableView: UITableView!
     
+    let addresses=[
+    "9466 Black Mountain Rd San Diego, CA 92126",
+    "10320 Maya Linda Rd San Diego, CA 92126 "
+    ]
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         map.delegate=self
+        
+        for x in addresses{
+            getPlacemarkFromAddress(x)
+        }
+        
     }
     
     let locationManager=CLLocationManager()
@@ -46,6 +57,27 @@ class LocationVC: UIViewController,UITableViewDelegate,UITableViewDataSource, MK
         let coordinateRegion=MKCoordinateRegionMakeWithDistance(location.coordinate, regionRadius*2, regionRadius*2)
         map.setRegion(coordinateRegion, animated: true)
     }
+    
+    
+    func getPlacemarkFromAddress(address:String){
+        CLGeocoder().geocodeAddressString(address) { (placemarks:[CLPlacemark]?, error:NSError?) in
+            if let marks=placemarks where marks.count>0{
+                if let loc=marks[0].location{
+                    self.createAnnotationForLocation(loc)
+                }
+            }
+        }
+    }
+    
+    func createAnnotationForLocation(location:CLLocation){
+        let bootcamp=BootcampAnnotation(coordinate:location.coordinate)
+        map.addAnnotation(bootcamp)
+     
+    }
+    
+    
+    
+    
 
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
